@@ -1,54 +1,53 @@
-const {response} = require('express');
+const { response } = require("express");
+const User = require("../models/users");
 
 const usersGet = (req = request, res = response) => {
+  const { q, name = "No name", apikey, page = 1, limit } = req.query;
 
-    const {q, name, apikey}=req.query;
+  res.json({
+    msg: "get API - controller",
+    q,
+    name,
+    apikey,
+    page,
+    limit,
+  });
+};
+const usersPost = async (req, res = response) => {
+  const body = req.body;
+  const user = new User(body);
 
-    res.json({
-        msg: 'get API',
-        q,
-        name,
-        apikey, 
-    });
-}
-const usersPost = (req, res = response) => {
+  await user.save();
 
-    const body = req.body;
+  res.json({
+    msg: "post API - usersPost",
+    user, //Make sure to include user's response.
+  });
 
-    res.json({
-
-        msg: 'post API',
-        body
-
-    });
-
-    console.log(`This is ${body.name} and I am ${body.age} y.o.` );
-}
+  //   console.log(`This is ${body.name} and I am ${body.age} y.o.`);
+};
 const usersPut = (req, res = response) => {
-
-    res.json({
-        msg: 'put API',
-    });
-}
+  res.json({
+    msg: "put API",
+  });
+};
 
 const usersPatch = (req, res = response) => {
-
-    res.json({
-        msg: 'patch API',
-    });
-}
+  res.json({
+    msg: "patch API",
+  });
+};
 
 const usersDelete = (req, res = response) => {
-
-    res.json({
-        msg: 'delete API',
-    });
-}
+  res.json({
+    msg: "delete API",
+  });
+};
 
 module.exports = {
-    usersGet,
-    usersPost,
-    usersPatch,
-    usersPut,
-    usersDelete,
-}
+  usersGet,
+  usersPost,
+  usersPatch,
+  usersPut,
+  usersDelete,
+};

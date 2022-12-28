@@ -1,42 +1,48 @@
-const express = require('express');
-const cors = require('cors');   
+const express = require("express");
+const cors = require("cors");
+
+const { dbConnection } = require("../database/config.js");
 
 class Server {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
+    this.usersPath = "/api/users";
 
-    constructor(){
-        this.app = express();
-        this.port = process.env.PORT;
-        this.usersPath = '/api/users';
+    //Connect DB
+    this.connectDB();
 
-        //Middlewares
-        this.middlewares();
-        
-        //Application routes
-        this.routes();
-    }
+    //Middlewares
+    this.middlewares();
 
-    middlewares(){
-        //CORS 
-        this.app.use(cors());
-        
-        //Body reading and parsing 
-        this.app.use( express.json());
+    //Application routes
+    this.routes();
+  }
 
-        //Public directory
-        this.app.use(express.static('public') );
-    }
+  async connectDB() {
+    await dbConnection();
+  }
+  middlewares() {
+    //CORS
+    this.app.use(cors());
 
-    //endpoint
-    routes() {
-       this.app.use(this.usersPath, require('../routes/user.js'));
-    }
+    //Body reading and parsing
+    this.app.use(express.json());
 
-    listen(){
-        this.app.listen(this.port, () => {
-            console.log('Server running in port', this.port);
-        });
+    //Public directory
+    this.app.use(express.static("public"));
+  }
 
-    }
+  //endpoint
+  routes() {
+    this.app.use(this.usersPath, require("../routes/user.js"));
+  }
+
+  listen() {
+    this.app.listen(this.port, () => {
+      console.log("Server running in port", this.port);
+    });
+  }
 }
 
 module.exports = Server;
